@@ -27,11 +27,11 @@ app.use('/', routes);
 app.use('/users', users);
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+/*app.use(function(req, res, next) {
   var err = new Error('Not Found');
   err.status = 404;
   next(err);
-});
+});*/
 
 // error handlers
 
@@ -57,16 +57,93 @@ app.use(function(err, req, res, next) {
   });
 });
 
-var db = mongoose.connect("mongodb://localhost:27017");
+mongoose.connect("mongodb://localhost:27017");
+var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error'));
+db.once('open', function (callback) {
+  console.log("Open");
+});
 
-var RecordSchema = new mongoose.Schema({
+var RecordSchema = mongoose.Schema({
   name: String,
   scores: Number,
   hostComputer: String,
   place: Number
 });
 
-var RecordModel = new mongoose.Model("Record", RecordSchema);
+var RecordModel = mongoose.model("Record", RecordSchema);
+
+app.get("/api/records", function(request, responce) {
+  return RecordModel.find(function(err, records) {
+    if (!err) {
+      console.log("Records read");
+      return responce.send(records);
+    } else {
+      return console.log(err);
+    }
+  })
+});
+
+app.get("/api/records/:id", function(request, responce) {
+  return RecordModel.findById(request.params.id, function(err, record) {
+    if (!err) {
+      console.log("Record read");
+      return responce.send(record);
+    } else {
+      return console.log(err);
+    }
+  });
+});
+
+app.post("/api/records", function(request, responce) {
+  debugger;
+  var record = new RecordModel({
+    name: request.body.name,
+    scores: request.body.scores,
+    hostComputer: request.body.hostComputer
+  });
+
+  record.save(function(err) {
+    if (!err) {
+      console.log("Record created");
+      return responce.send(record);
+    } else {
+      console.log(err);
+    }
+  })
+});
+
+app.put("/api/records", function(request, responce) {
+  return RecordModel.findById(request.params.id, function(err, record) {
+    if (!err) {
+      record.name = request.body.name;
+      record.scores = request.body.name;
+      record.hostComputer = request.body.hostComputer;
+      record.place = request.body.place;
+
+      record.save(function(err) {
+        if (!err) {
+          console.log("Record updated");
+          return responce.send(record);
+        } else {
+          console.log(err);
+        }
+      })
+    }
+  });
+});
+
+app.delete("/api/records/:id", function(request, responce) {
+  return RecordModel.findById(request.params.id, function(err, record) {
+    return record.remove(function(err) {
+      if (!err) {
+        console.log("Record removed");
+        responce.send("");
+      } else {
+        console.log(err);
+      }
+    })
+  })
+});
 
 module.exports = app;
