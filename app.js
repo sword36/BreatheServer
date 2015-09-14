@@ -4,6 +4,7 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var mongoose = require('mongoose');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
@@ -56,5 +57,16 @@ app.use(function(err, req, res, next) {
   });
 });
 
+var db = mongoose.connect("mongodb://localhost:27017");
+db.on('error', console.error.bind(console, 'connection error'));
+
+var RecordSchema = new mongoose.Schema({
+  name: String,
+  scores: Number,
+  hostComputer: String,
+  place: Number
+});
+
+var RecordModel = new mongoose.Model("Record", RecordSchema);
 
 module.exports = app;
