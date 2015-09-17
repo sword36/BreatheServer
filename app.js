@@ -96,7 +96,6 @@ app.get("/api/records/:id", function(request, responce) {
 });
 
 app.post("/api/records", function(request, responce) {
-  debugger;
   var record = new RecordModel({
     name: request.body.name,
     scores: request.body.scores,
@@ -113,11 +112,11 @@ app.post("/api/records", function(request, responce) {
   })
 });
 
-app.put("/api/records", function(request, responce) {
+app.put("/api/records/:id", function(request, responce) {
   return RecordModel.findById(request.params.id, function(err, record) {
     if (!err) {
       record.name = request.body.name;
-      record.scores = request.body.name;
+      record.scores = request.body.scores;
       record.hostComputer = request.body.hostComputer;
       record.place = request.body.place;
 
