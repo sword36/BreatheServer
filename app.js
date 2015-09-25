@@ -64,11 +64,15 @@ db.once('open', function (callback) {
   console.log("Open");
 });
 
+var PointSchema = mongoose.Schema({
+  p: [Number]
+}, {_id: false});
+
 var CollisionSchema = mongoose.Schema({
   class: String,
   type: String,
   position: [Number]
-});
+}, {_id: false});
 
 var GameSchema = mongoose.Schema({
   id: String,
@@ -76,10 +80,10 @@ var GameSchema = mongoose.Schema({
   end: Date,
   playerName: String,
   scores: Number,
-  path: [Number],
+  path: [PointSchema],
   collisions: [CollisionSchema],
   breatheAmount: Number
-});
+}, {_id: false});
 
 var SessionSchema = mongoose.Schema({
   start: Date,
