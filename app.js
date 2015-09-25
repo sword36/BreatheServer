@@ -82,7 +82,8 @@ var GameSchema = mongoose.Schema({
   scores: Number,
   path: [PointSchema],
   collisions: [CollisionSchema],
-  breatheAmount: Number
+  breatheAmount: Number,
+  viewPort: [Number]
 }, {_id: false});
 
 var SessionSchema = mongoose.Schema({
