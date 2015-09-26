@@ -75,7 +75,6 @@ var CollisionSchema = mongoose.Schema({
 }, {_id: false});
 
 var GameSchema = mongoose.Schema({
-  id: String,
   start: Date,
   end: Date,
   playerName: String,
@@ -84,7 +83,7 @@ var GameSchema = mongoose.Schema({
   collisions: [CollisionSchema],
   breatheAmount: Number,
   viewPort: [Number]
-}, {_id: false});
+});
 
 var SessionSchema = mongoose.Schema({
   start: Date,
@@ -201,24 +200,46 @@ app.get("/api/sessions/:id", function(request, responce) {
 });
 
 app.post("/api/sessions", function(request, responce) {
-  var session = new SessionModel({
-    start: request.body.start,
-    end: request.body.end,
-    hostComputer: request.body.hostComputer,
-    games: request.body.games
-  });
+  if (!Array.isArray(request.body)) {
+    var session = new SessionModel({
+      start: request.body.start,
+      end: request.body.end,
+      hostComputer: request.body.hostComputer,
+      games: request.body.games
+    });
 
-  session.save(function(err) {
-    if (!err) {
-      console.log("Session created");
-      return responce.send(session);
-    } else {
-      console.log(err);
-    }
-  })
+    session.save(function(err) {
+      if (!err) {
+        console.log("Session created");
+        return responce.send("created");
+      } else {
+        console.log(err);
+      }
+    });
+  } else {
+    //var sessions = [];
+    request.body.forEach(function(sessionBody) {
+      var session = new SessionModel({
+        start: sessionBody.start,
+        end: sessionBody.end,
+        hostComputer: sessionBody.hostComputer,
+        games: sessionBody.games
+      });
+
+      session.save(function(err) {
+        if (!err) {
+          console.log("Session created");
+          //sessions.push(JSON.parse(JSON.stringify(session)));
+        } else {
+          console.log(err);
+        }
+      });
+    });
+    return responce.send("created");
+  }
 });
 
-app.put("/api/sessions/:id", function(request, responce) {
+app.put("/api/sessions/:id"                                                                                                                                                                                                                                                                                                                                                                                               , function(request, responce) {
   return SessionModel.findById(request.params.id, function(err, session) {
     if (!err) {
       session.start = request.body.start;
