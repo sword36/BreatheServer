@@ -57,7 +57,14 @@ app.use(function(err, req, res, next) {
   });
 });
 
-mongoose.connect("mongodb://localhost:27017");
+var connectString = "mongodb://localhost:27017";
+if (!process.env.local) {
+  connectString = "mongodb://" + process.env.dbuser + ":" + process.env.dbpassword
+  + "@ds041643.mongolab.com:41643/breatheserver";
+}
+
+console.log(connectString);
+mongoose.connect(connectString);
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error'));
 db.once('open', function (callback) {
