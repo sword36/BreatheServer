@@ -89,7 +89,7 @@ var GameSchema = mongoose.Schema({
   breatheAmount: Number,
   viewPort: [Number],
 
-  playerId: ObjectId,
+  playerId: String,
   scores: Number
 });
 
@@ -98,7 +98,7 @@ var SessionSchema = mongoose.Schema({
   end: Date,
   hostComputer: String,
 
-  gamesId: [ObjectId]
+  gamesId: [String]
 });
 
 var MentorSchema = mongoose.Schema({
@@ -107,7 +107,7 @@ var MentorSchema = mongoose.Schema({
   login: String,
   password: Number,
 
-  playersId: [ObjectId]
+  playersId: [String]
 });
 
 var PlayerSchema = mongoose.Schema({
