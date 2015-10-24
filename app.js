@@ -5,6 +5,7 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
+var Promise = require('promise');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
@@ -71,6 +72,8 @@ db.once('open', function (callback) {
   console.log("Open");
 });
 
+var ObjectId = mongoose.Schema.Types.ObjectId;
+
 var PointSchema = mongoose.Schema({
   p: [Number]
 }, {_id: false});
@@ -89,7 +92,7 @@ var GameSchema = mongoose.Schema({
   breatheAmount: Number,
   viewPort: [Number],
 
-  playerId: String,
+  playerId: {type: ObjectId, ref: "Player"},
   scores: Number
 });
 
@@ -98,7 +101,7 @@ var SessionSchema = mongoose.Schema({
   end: Date,
   hostComputer: String,
 
-  gamesId: [String]
+  gamesId: [{type: ObjectId, ref: "Game"}]
 });
 
 var MentorSchema = mongoose.Schema({
@@ -107,7 +110,7 @@ var MentorSchema = mongoose.Schema({
   login: String,
   password: Number,
 
-  playersId: [String]
+  playersId: [{type: ObjectId, ref: "Player"}]
 });
 
 var PlayerSchema = mongoose.Schema({
@@ -117,7 +120,7 @@ var PlayerSchema = mongoose.Schema({
   place: Number
 });
 
-var PlayerModel = mongoose.model("Record", PlayerSchema);
+var PlayerModel = mongoose.model("Player", PlayerSchema);
 var SessionModel = mongoose.model("Session", SessionSchema);
 var GameModel = mongoose.model("Game", GameSchema);
 var MentorModel = mongoose.model("Mentor", MentorSchema);
@@ -125,7 +128,7 @@ var MentorModel = mongoose.model("Mentor", MentorSchema);
 var setModelFromBody = function(body, model) {
   var obj;
   if (typeof model == "undefined") { //then create model, else update old(not necessary all keys)
-    obj = Object.create(null);
+    obj = {};
   }
 
   for (var attr in body) {
@@ -229,6 +232,109 @@ var entities = ["session", "game", "player", "mentor"];
 
 createRestFromEntities(entities);
 
+var createGameModel = function(data, pId) {
+  var tempObj = setModelFromBody(data);
+  tempObj.playerName = null;
+  delete tempObj.playerName;
+  tempObj.playerId = pId;
+
+  return new GameModel(setModelFromBody(tempObj));
+};
+
+app.post("/api/statistics", function(request, responce) {
+  var data = request.body;
+  if (!Array.isArray(data)) {
+    data = [data];
+  }
+
+  var toBeSaved = [];
+  var playersIds = {}; //cash of players id
+
+  var sessionPromises = [];
+  data.forEach(function(sessionData) {
+    var sessionPromise = new Promise(function(resolve, reject) {
+      var session = new SessionModel({
+        start: sessionData.start,
+        end: sessionData.end,
+        hostComputer: sessionData.hostComputer,
+        gamesId: []
+      });
+
+      toBeSaved.push(session);
+
+      var gamePromises = [];
+      sessionData.games.forEach(function(game) {
+        var gamePromise = new Promise(function(resolve, reject) {
+          var gameWithPlayer;
+
+          if (typeof playersIds[game.playerName] != "undefined") {
+            gameWithPlayer = createGameModel(game, playersIds[game.playerName]);
+
+            session.gamesId.push(gameWithPlayer._id);
+            toBeSaved.push(gameWithPlayer);
+
+            resolve();
+          } else {
+            PlayerModel.findOne({name: game.playerName}, function(err, player) {
+              if (!err && player != null) {
+
+                if (game.scores > player.scores) { //update player scores
+                  player.scores = game.scores;
+                  toBeSaved.push(player);
+                }
+
+                playersIds[game.playerName] = player._id; //add to cash
+                gameWithPlayer = createGameModel(game, player._id);
+              } else { //create new player
+                var newPlayer = new PlayerModel({
+                  name: game.playerName,
+                  scores: game.scores,
+                  hostComputer: sessionData.hostComputer
+                });
+
+                playersIds[game.playerName] = newPlayer._id; //add to cash
+                toBeSaved.push(newPlayer);
+                gameWithPlayer = createGameModel(game, newPlayer._id);
+              }
+
+              session.gamesId.push(gameWithPlayer._id);
+              toBeSaved.push(gameWithPlayer);
+              resolve();
+            });
+          }
+        });
+        gamePromises.push(gamePromise);
+      }, this);
+
+      var savingModelPromises = [];
+
+      Promise.all(gamePromises).then(function(res) {
+        toBeSaved.forEach(function(model) {
+          var savingPromise = new Promise(function(resolve, reject) {
+            model.save(function(err) {
+              if (!err) {
+                resolve();
+              } else {
+                reject();
+              }
+            });
+          });
+          savingModelPromises.push(savingPromise);
+        });
+
+        Promise.all(savingModelPromises).then(function() {
+          resolve();
+        });
+      });
+    });
+
+    sessionPromises.push(sessionPromise);
+  }, this);
+
+  Promise.all(sessionPromises).then(function() {
+    return responce.send("success");
+  });
+});
 ////sessions route
 //app.get("/api/sessions", function(request, responce) {
 //  return SessionModel.find(function(err, sessions) {
