@@ -10,6 +10,12 @@ var Promise = require('promise');
 var routes = require('./routes/index');
 var users = require('./routes/users');
 
+//models
+var PlayerModel = require("./models/player");
+var SessionModel = require("./models/session");
+var GameModel = require("./models/game");
+var MentorModel = require("./models/mentor");
+
 var config = require('./config.js');
 
 var app = express();
@@ -72,57 +78,6 @@ app.use(function(err, req, res, next) {
 });
 
 var ObjectId = mongoose.Schema.Types.ObjectId;
-
-var PointSchema = mongoose.Schema({
-  p: [Number]
-}, {_id: false});
-
-var CollisionSchema = mongoose.Schema({
-  class: String,
-  type: String,
-  position: [Number]
-}, {_id: false});
-
-var GameSchema = mongoose.Schema({
-  start: Date,
-  end: Date,
-  path: [PointSchema],
-  collisions: [CollisionSchema],
-  breatheAmount: Number,
-  viewPort: [Number],
-
-  _player: {type: ObjectId, ref: "Player"},
-  scores: Number
-});
-
-var SessionSchema = mongoose.Schema({
-  start: Date,
-  end: Date,
-  hostComputer: String,
-
-  _games: [{type: ObjectId, ref: "Game"}]
-});
-
-var MentorSchema = mongoose.Schema({
-  name: String,
-  surname: String,
-  login: String,
-  password: Number,
-
-  _players: [{type: ObjectId, ref: "Player"}]
-});
-
-var PlayerSchema = mongoose.Schema({
-  name: String,
-  scores: Number,
-  hostComputer: String,
-  place: Number
-});
-
-var PlayerModel = mongoose.model("Player", PlayerSchema);
-var SessionModel = mongoose.model("Session", SessionSchema);
-var GameModel = mongoose.model("Game", GameSchema);
-var MentorModel = mongoose.model("Mentor", MentorSchema);
 
 var setModelFromBody = function(body, model) {
   var obj;
