@@ -4,7 +4,7 @@
       <env name="DEBUG" value="BreatheServer" />
       <env name="dbuser" value="name" />
       <env name="dbpassword" value="1234" />
-      <env name="local" value="true" />
+      <env name="env" value="test" />
     </envs>
     <browser url="http://localhost:3000/" />
     <RunnerSettings RunnerId="Basic" />

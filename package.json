@@ -14,5 +14,15 @@
     "mongoose": "^4.1.6",
     "morgan": "~1.6.1",
     "serve-favicon": "~2.3.0"
+  },
+  "devDependencies": {
+    "mocha": "*",
+    "chai": "*",
+    "sinon": "*"
+  },
+  "scripts": {
+    "start": "node bin/www",
+    "test": "set NODE_ENV=test && \"./node_modules/.bin/mocha\" --ui bdd",
+    "testDb": "mongod --port 27018 --dbpath C:\\db\\test"
   }
 }

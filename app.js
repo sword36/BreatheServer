@@ -10,11 +10,24 @@ var Promise = require('promise');
 var routes = require('./routes/index');
 var users = require('./routes/users');
 
+var config = require('./config.js');
+
 var app = express();
 
 // view engine setup
+
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
+
+app.set("dbUrl", config.db[app.settings.env]);
+console.log(app.get("dbUrl"));
+
+mongoose.connect(app.get("dbUrl"));
+var db = mongoose.connection;
+db.on('error', console.error.bind(console, 'connection error'));
+db.once('open', function (callback) {
+  console.log("Open");
+});
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
@@ -58,20 +71,6 @@ app.use(function(err, req, res, next) {
   });
 });
 
-var connectString = "mongodb://localhost:27017";
-if (!process.env.local) {
-  connectString = "mongodb://" + process.env.dbuser + ":" + process.env.dbpassword
-  + "@ds041643.mongolab.com:41643/breatheserver";
-}
-
-console.log(connectString);
-mongoose.connect(connectString);
-var db = mongoose.connection;
-db.on('error', console.error.bind(console, 'connection error'));
-db.once('open', function (callback) {
-  console.log("Open");
-});
-
 var ObjectId = mongoose.Schema.Types.ObjectId;
 
 var PointSchema = mongoose.Schema({
@@ -92,7 +91,7 @@ var GameSchema = mongoose.Schema({
   breatheAmount: Number,
   viewPort: [Number],
 
-  playerId: {type: ObjectId, ref: "Player"},
+  _player: {type: ObjectId, ref: "Player"},
   scores: Number
 });
 
@@ -101,7 +100,7 @@ var SessionSchema = mongoose.Schema({
   end: Date,
   hostComputer: String,
 
-  gamesId: [{type: ObjectId, ref: "Game"}]
+  _games: [{type: ObjectId, ref: "Game"}]
 });
 
 var MentorSchema = mongoose.Schema({
@@ -110,7 +109,7 @@ var MentorSchema = mongoose.Schema({
   login: String,
   password: Number,
 
-  playersId: [{type: ObjectId, ref: "Player"}]
+  _players: [{type: ObjectId, ref: "Player"}]
 });
 
 var PlayerSchema = mongoose.Schema({
@@ -236,7 +235,7 @@ var createGameModel = function(data, pId) {
   var tempObj = setModelFromBody(data);
   tempObj.playerName = null;
   delete tempObj.playerName;
-  tempObj.playerId = pId;
+  tempObj._player = pId;
 
   return new GameModel(setModelFromBody(tempObj));
 };
@@ -248,7 +247,7 @@ app.post("/api/statistics", function(request, responce) {
   }
 
   var toBeSaved = [];
-  var playersIds = {}; //cash of players id
+  var playersId = {}; //cash of players id
 
   var sessionPromises = [];
   data.forEach(function(sessionData) {
@@ -257,7 +256,7 @@ app.post("/api/statistics", function(request, responce) {
         start: sessionData.start,
         end: sessionData.end,
         hostComputer: sessionData.hostComputer,
-        gamesId: []
+        _games: []
       });
 
       toBeSaved.push(session);
@@ -267,10 +266,10 @@ app.post("/api/statistics", function(request, responce) {
         var gamePromise = new Promise(function(resolve, reject) {
           var gameWithPlayer;
 
-          if (typeof playersIds[game.playerName] != "undefined") {
-            gameWithPlayer = createGameModel(game, playersIds[game.playerName]);
+          if (typeof playersId[game.playerName] != "undefined") {
+            gameWithPlayer = createGameModel(game, playersId[game.playerName]);
 
-            session.gamesId.push(gameWithPlayer._id);
+            session._games.push(gameWithPlayer._id);
             toBeSaved.push(gameWithPlayer);
 
             resolve();
@@ -283,7 +282,7 @@ app.post("/api/statistics", function(request, responce) {
                   toBeSaved.push(player);
                 }
 
-                playersIds[game.playerName] = player._id; //add to cash
+                playersId[game.playerName] = player._id; //add to cash
                 gameWithPlayer = createGameModel(game, player._id);
               } else { //create new player
                 var newPlayer = new PlayerModel({
@@ -292,12 +291,12 @@ app.post("/api/statistics", function(request, responce) {
                   hostComputer: sessionData.hostComputer
                 });
 
-                playersIds[game.playerName] = newPlayer._id; //add to cash
+                playersId[game.playerName] = newPlayer._id; //add to cash
                 toBeSaved.push(newPlayer);
                 gameWithPlayer = createGameModel(game, newPlayer._id);
               }
 
-              session.gamesId.push(gameWithPlayer._id);
+              session._games.push(gameWithPlayer._id);
               toBeSaved.push(gameWithPlayer);
               resolve();
             });
@@ -430,5 +429,12 @@ app.post("/api/statistics", function(request, responce) {
 //    })
 //  })
 //});
+GameModel.findOne().populate("_player").exec(function(err, game) {
+  if (err) {
+    console.log(err);
+  } else {
+    //console.log(game._player.name);
+  }
+});
 
 module.exports = app;
