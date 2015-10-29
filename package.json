@@ -21,8 +21,8 @@
     "sinon": "*"
   },
   "scripts": {
-    "start": "node bin/www",
-    "test": "set NODE_ENV=test && \"./node_modules/.bin/mocha\" --ui bdd test test/models",
+    "start": "set NODE_ENV=development&& node bin/www",
+    "test": "set NODE_ENV=test&& \"./node_modules/.bin/mocha\" --ui bdd test/support test test/models",
     "testDb": "mongod --port 27018 --dbpath C:\\db\\test"
   }
 }
