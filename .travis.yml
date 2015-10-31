@@ -1,6 +1,8 @@
 language: node_js
 node_js:
  - "0.12"
+services:
+ - mongodb
 install:
  - npm install phantomjs -g
  - npm install mocha-phantomjs -g
