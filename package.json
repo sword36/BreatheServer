@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "set NODE_ENV=development&& node bin/www",
-    "testServer": "set NODE_ENV=test&& \"./node_modules/.bin/mocha\" --ui bdd test/support test test/models",
+    "testServer": "\"./node_modules/.bin/mocha\" --ui bdd test/support test test/models",
     "testClient": "mocha-phantomjs public/test/test.html",
     "testDb": "mongod --port 27018 --dbpath C:\\db\\test"
   },
