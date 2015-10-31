@@ -25,12 +25,11 @@ var app = express();
 //app.set('views', path.join(__dirname, 'views'));
 //app.set('view engine', 'jade');
 
-app.set("dbUrl", config.db[app.get("env")]); //set node_env=test - without space on end(test )!
+app.set("dbUrl", config.db[process.env.node_env]); //set node_env=test - without space on end(test )!
 
 console.log(app.get("dbUrl"));
 console.log(app.get("env"));
-console.log(config.db[app.get("env")]);
-console.log(process.env);
+//console.log(config.db[app.get("env")]);
 
 mongoose.connect(app.get("dbUrl"));
 var db = mongoose.connection;
