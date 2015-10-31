@@ -5,6 +5,7 @@ var app = require("../app");
 app.set("port", 8000);
 var http = require("http");
 var server = http.createServer(app);
+var utils = require("./support/utils");
 
 describe("Server", function() {
     before(function() {
