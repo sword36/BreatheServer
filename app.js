@@ -27,6 +27,8 @@ var app = express();
 
 app.set("dbUrl", config.db[app.get("env")]); //set node_env=test - without space on end(test )!
 console.log(app.get("dbUrl"));
+console.log(app.get("env"));
+console.log(config.db[app.get("env")]);
 
 mongoose.connect(app.get("dbUrl"));
 var db = mongoose.connection;
