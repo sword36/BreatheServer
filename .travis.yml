@@ -12,4 +12,4 @@ before_script:
  - phantomjs -v
 script:
  - npm run testClient
- - npm run testClient
+ - npm run testServer
