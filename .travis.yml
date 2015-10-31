@@ -11,6 +11,7 @@ install:
  - npm install gulp -g
  - npm install
 before_script:
+ - mongo mydb_test --eval 'db.addUser("travis", "test");'
  - sleep 15
  - phantomjs -v
 script:
