@@ -26,10 +26,11 @@ var app = express();
 //app.set('view engine', 'jade');
 
 app.set("dbUrl", config.db[app.get("env")]); //set node_env=test - without space on end(test )!
+app.set("dbUrl", "mongodb://127.0.0.1");
+
 console.log(app.get("dbUrl"));
 console.log(app.get("env"));
 console.log(config.db[app.get("env")]);
-app.set("dbUrl", "mongodb://127.0.0.1");
 
 mongoose.connect(app.get("dbUrl"));
 var db = mongoose.connection;

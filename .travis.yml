@@ -3,6 +3,8 @@ node_js:
  - "0.12"
 services:
  - mongodb
+env:
+ - node_env=travis
 install:
  - npm install phantomjs -g
  - npm install mocha-phantomjs -g
