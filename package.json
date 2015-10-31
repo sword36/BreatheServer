@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "start": "set NODE_ENV=development&& node bin/www",
-    "test": "set NODE_ENV=test&& \"./node_modules/.bin/mocha\" --ui bdd test/support test test/models",
+    "testServer": "set NODE_ENV=test&& \"./node_modules/.bin/mocha\" --ui bdd test/support test test/models",
+    "testClient": "mocha-phantomjs public/test/test.html",
     "testDb": "mongod --port 27018 --dbpath C:\\db\\test"
   },
   "dependencies": {
@@ -25,6 +26,7 @@
     "gulp-mocha-phantomjs": "^0.10.1",
     "gulp-watch": "^4.3.5",
     "mocha": "*",
+    "mocha-phantomjs": "^4.0.1",
     "sinon": "*",
     "sinon-chai": "*",
     "vinyl-source-stream": "^1.1.0"
