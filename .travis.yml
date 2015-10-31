@@ -11,7 +11,7 @@ install:
  - npm install gulp -g
  - npm install
 before_script:
- - sudo -u mongodb mongod --repair --dbpath /var/lib/mongodb/
+ - sudo -u mongodb mongod --repair --port 27017
  - sudo service mongod start
  - sleep 15
  - phantomjs -v
