@@ -3,6 +3,8 @@ node_js:
  - "0.12"
 services:
  - mongodb
+notifications:
+ email: false
 env:
  - node_env=travis
 install:
