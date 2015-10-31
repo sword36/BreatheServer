@@ -21,9 +21,11 @@
     "browserify": "^12.0.1",
     "chai": "*",
     "gulp": "^3.9.0",
+    "gulp-mocha-phantomjs": "^0.10.1",
     "gulp-watch": "^4.3.5",
     "mocha": "*",
     "sinon": "*",
+    "sinon-chai": "*",
     "vinyl-source-stream": "^1.1.0"
   }
 }
