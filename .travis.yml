@@ -9,7 +9,7 @@ install:
  - npm install gulp -g
  - npm install
 before_script:
- - phantomjs -version
+ - phantomjs -v
  - mocha-phantomjs -version
 script:
  - npm run testClient
