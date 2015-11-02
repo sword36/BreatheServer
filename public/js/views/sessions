@@ -1,0 +1,46 @@
+var $ = require("jQuery");
+var Backbone = require("Backbone");
+Backbone.$ = $;
+var _ = require("underscore");
+var Backgrid = require("Backgrid");
+
+var SessionCollection = require("../collections/sessions");
+var sessions = new SessionCollection();
+
+var formatterDateTime = _.extend({}, Backgrid.CellFormatter.prototype, {
+    fromRaw: function(rawValue, model) {
+        return rawValue;
+    }
+});
+
+var columns = [{
+    name: "_id",
+    label: "ID",
+    editable: false,
+    cell: Backgrid.StringCell
+}, {
+    name: "start",
+    label: "Start",
+    editable: false,
+    cell: Backgrid.DatetimeCell,
+    formatter: formatterDateTime
+    }, {
+    name: "end",
+    label: "End",
+    editable: false,
+    cell: Backgrid.DatetimeCell,
+    formatter: formatterDateTime
+}, {
+    name: "hostComputer",
+    label: "Host computer",
+    editable: false,
+    cell: Backgrid.StringCell
+}];
+var sessionsGrid = new Backgrid.Grid({
+    columns: columns,
+    collection: sessions
+});
+
+$("#table").append(sessionsGrid.render().el);
+
+module.exports = sessionsGrid;
