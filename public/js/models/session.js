@@ -6,6 +6,12 @@ var Backbone = require("Backbone");
 Backbone.$ = $;
 
 var SessionModel = Backbone.Model.extend({
+    default: {
+        start: new Date(),
+        end: new Date(),
+        hostComputer: 0,
+        _games: []
+    },
     idAttribute: "_id",
     initialize: function() {
         var gamesCount = this.get("_games").length;
