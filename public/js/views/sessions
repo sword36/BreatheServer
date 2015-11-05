@@ -9,7 +9,7 @@ var sessions = new SessionCollection();
 
 var formatterDateTime = _.extend({}, Backgrid.CellFormatter.prototype, {
     fromRaw: function(rawValue, model) {
-        return rawValue;
+        return new Date(rawValue);
     }
 });
 
