@@ -4,6 +4,7 @@ Backbone.$ = $;
 var _ = require("underscore");
 var Backgrid = require("Backgrid");
 var formatter = require("../dateTimeFormatter");
+var ClickableCell = require("./clickableCell");
 
 var SessionCollection = require("../collections/sessions");
 var sessions = new SessionCollection();
@@ -14,6 +15,8 @@ var formatterDateTime = _.extend({}, Backgrid.CellFormatter.prototype, {
     }
 });
 
+
+
 var columns = [{
     name: "_id",
     label: "ID",
@@ -21,21 +24,26 @@ var columns = [{
     cell: Backgrid.StringCell
 }, {
     name: "start",
-    label: "Start",
+    label: "Начало",
     editable: false,
     cell: Backgrid.DatetimeCell,
     formatter: formatterDateTime
     }, {
     name: "end",
-    label: "End",
+    label: "Конец",
     editable: false,
     cell: Backgrid.DatetimeCell,
     formatter: formatterDateTime
 }, {
     name: "hostComputer",
-    label: "Host computer",
+    label: "Номер компьютера",
     editable: false,
     cell: Backgrid.StringCell
+}, {
+    name: "gamesCount",
+    label: "Игры в сессии",
+    editable: false,
+    cell: ClickableCell
 }];
 var sessionsGrid = new Backgrid.Grid({
     columns: columns,
