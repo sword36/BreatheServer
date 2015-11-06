@@ -14,10 +14,12 @@ var ClickableCell = Backgrid.Cell.extend({
         var model = this.model;
         //var formattedValue = this.formatter.fromRaw(model.get(this.column.get("name")), model);
         var value = model.get(this.column.get("name"));
-        if (model.get("href")) {
+        var hrefName = model.get("hrefName");
+        var href = model.get(hrefName);
+        if (href) {
             this.$el.append($("<a>", {
                 tabIndex: -1,
-                href: "#" + model.get("href"),
+                href: "#" + href,
                 title: value
             }).text(value));
         } else {
@@ -26,6 +28,15 @@ var ClickableCell = Backgrid.Cell.extend({
 
         this.delegateEvents();
         return this;
+    },
+
+    initialize: function(opts) {
+        Backgrid.Cell.prototype.initialize.apply(this, arguments);
+        this.model = opts.model;
+        this.column = opts.column;
+
+        var hrefName = opts.column.get("name");
+        this.model.set("hrefName", hrefName + "Href");
     }
 });
 
