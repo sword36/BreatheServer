@@ -3,7 +3,7 @@
  */
 var Backbone = require("Backbone");
 var PageableCollection = require("backbone.paginator");
-var GameModel = require("../models/player");
+var GameModel = require("../models/game");
 
 var GameCollection = PageableCollection.extend({
     model: GameModel,

@@ -14,11 +14,11 @@ var SessionModel = Backbone.Model.extend({
     initialize: function() {
         var gamesCount = this.get("_games").length;
         this.set("gamesCount", "Игры: " + gamesCount);
-        var gamesUrl = "";
+        var gamesCountHref = ["sessions", this.get("_id")].join("/");
         if (gamesCount != 0) {
-            gamesUrl = "games/" + this.get("_id");
+            gamesCountHref = ["games", this.get("_games")[0]].join("/"); //first game id
         }
-        this.set("href", gamesUrl);
+        this.set("gamesCountHref", gamesCountHref);
     }
 });
 

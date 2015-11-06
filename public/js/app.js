@@ -9,7 +9,10 @@ Backbone.PageableCollection = require("backbone.paginator");
 var Backgrid = require("Backgrid");
 
 var sessionsView = require("./views/sessions");
+//var gamesView = require("./views/games");
 
 $(function() {
+    // gamesView.collection.fetch({reset: true});
     sessionsView.collection.fetch({reset: true});
+
 });
