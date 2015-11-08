@@ -16,5 +16,5 @@ var playersView = require("./views/players");
 $(function() {
     // gamesView.collection.fetch({reset: true});
     //sessionsView.collection.fetch({reset: true});
-    playersView.collection.fetch({reset: true});
+    playersView .collection.fetch({reset: true});
 });

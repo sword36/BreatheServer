@@ -6,13 +6,12 @@ var gulp = require("gulp");
 var source = require("vinyl-source-stream");
 var mochaPhantomJS = require("gulp-mocha-phantomjs");
 var mocha = require("gulp-mocha");
-//var watch = require("gulp-watch");
 
 gulp.task("browserify", function() {
     return browserify("./public/js/app.js", {debug:true})
         .bundle()
         .pipe(source("app.js"))
-        .pipe(gulp.dest("./public/js/build/"));
+        .pipe(gulp.dest("./public/build/"));
 });
 
 gulp.task("testClient", function() {
@@ -35,7 +34,7 @@ gulp.task("testServer", function() {
 });
 
 gulp.task("default", function() {
-    gulp.watch("./public/js/**", function(event) {
+    gulp.watch(["./public/js/**"], function(event) {
         gulp.start("browserify");
     })
 });

@@ -34,6 +34,7 @@
     "mocha-phantomjs": "^4.0.1",
     "sinon": "*",
     "sinon-chai": "*",
-    "vinyl-source-stream": "^1.1.0"
+    "vinyl-source-stream": "^1.1.0",
+    "watchify": "^3.6.0"
   }
 }
