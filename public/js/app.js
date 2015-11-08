@@ -8,11 +8,13 @@ Backbone.$ = $;
 Backbone.PageableCollection = require("backbone.paginator");
 var Backgrid = require("Backgrid");
 
-var sessionsView = require("./views/sessions");
+//var sessionsView = require("./views/sessions");
 //var gamesView = require("./views/games");
+var playersView = require("./views/players");
+
 
 $(function() {
     // gamesView.collection.fetch({reset: true});
-    sessionsView.collection.fetch({reset: true});
-
+    //sessionsView.collection.fetch({reset: true});
+    playersView.collection.fetch({reset: true});
 });

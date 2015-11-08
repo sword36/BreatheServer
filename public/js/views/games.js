@@ -67,6 +67,7 @@ var columns = [{
     editable: false,
     cell: Backgrid.StringCell
 }];
+
 var gamesGrid = new Backgrid.Grid({
     columns: columns,
     collection: games

@@ -45,6 +45,7 @@ var columns = [{
     editable: false,
     cell: ClickableCell
 }];
+
 var sessionsGrid = new Backgrid.Grid({
     columns: columns,
     collection: sessions
