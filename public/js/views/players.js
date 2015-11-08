@@ -26,8 +26,8 @@ var columns = [{
     editable: false,
     cell: Backgrid.IntegerCell
 },{
-    name: "scores",
-    label: "Очки",
+    name: "place",
+    label: "Место",
     editable: false,
     cell: Backgrid.IntegerCell
 }, {
